@@ -119,4 +119,52 @@
   body {
     @apply bg-background text-foreground;
   }
+  html, body {
+    overflow-x: hidden;
+  }
+  [data-sidebar="sidebar"] {
+    overflow-x: hidden;
+  }
+  /* Prevent layout shifts from dropdowns */
+  [data-radix-popper-content-wrapper] {
+    z-index: 50;
+  }
+  /* Ensure stable layout */
+  .overflow-auto {
+    scrollbar-gutter: stable;
+  }
+  /* Prevent dropdown flickering and layout shifts */
+  [data-radix-dropdown-menu-content] {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  /* Lock main content area */
+  main {
+    contain: layout;
+  }
+  /* Prevent any layout shifts from floating elements */
+  [data-radix-dropdown-menu-trigger] {
+    position: relative;
+  }
+  /* Force stable layout for the entire page */
+  body {
+    overflow-x: hidden;
+    width: 100vw;
+    max-width: 100vw;
+  }
+  /* Prevent content shifting */
+  .flex-1 {
+    min-width: 0;
+  }
+  /* Lock the sidebar layout */
+  [data-sidebar="sidebar"] {
+    flex-shrink: 0;
+    width: var(--sidebar-width, 16rem);
+  }
+  /* Prevent main content from shifting */
+  [data-sidebar="inset"] {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
 }

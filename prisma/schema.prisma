@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Org {
+  id                  String      @id
+  username            String
+  password            String?
+  country             String?
+  socialMediaPlatform String?
+  socialMediaHandle   String?
+  verificationStatus  String      @default("pending")
+  pictureUrl          String?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  inviteCodeUsed      String?
+  name                String?
+  verifiedAt          DateTime?
+  inviteCode          InviteCode? @relation(fields: [inviteCodeUsed], references: [code])
+  protests            Protest[]
+
+  @@map("orgs")
+}
+
+model Protest {
+  id          String   @id
+  title       String
+  dateTime    DateTime
+  location    String
+  pictureUrl  String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  organizerId String
+  city        String?
+  country     String?
+  organizer   Org       @relation(fields: [organizerId], references: [id])
+
+  @@map("protests")
+}
+
+model InviteCode {
+  id        String    @id
+  code      String    @unique
+  isUsed    Boolean   @default(false)
+  expiresAt DateTime
+  sentTo    String?
+  sentAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  orgs      Org[]
+
+  @@map("invite_codes")
+}
+
+enum app_permission {
+  orgs_read           @map("orgs.read")
+  orgs_write          @map("orgs.write")
+  orgs_delete         @map("orgs.delete")
+  protests_read       @map("protests.read")
+  protests_write      @map("protests.write")
+  protests_delete     @map("protests.delete")
+  invite_codes_read   @map("invite_codes.read")
+  invite_codes_write  @map("invite_codes.write")
+  invite_codes_delete @map("invite_codes.delete")
+  admin_full_access   @map("admin.full_access")
+}
+
+enum app_role {
+  admin
+  moderator
+  viewer
+}
